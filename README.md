@@ -27,7 +27,7 @@ This repo is the exact setup + benchmarks behind running Ornith locally on a **f
 Two real Ornith sessions from this setup — a 9B model, on a fanless MacBook Air, offline:
 
 - **Built a game, then debugged it.** From the prompt *"create a playable brick breaker game,"* Ornith wrote a complete single-file HTML5 canvas game — paddle, angle-aware ball, 6×10 bricks, particle effects, lives, progressive levels. When told *"fix the level bug and the game-over bug,"* it identified both root causes and patched them.
-  **▶ Play it: [brick-game.sajithk.in](https://brick-game.sajithk.in)** — source in [`examples/brick-breaker.html`](examples/brick-breaker.html).
+  **▶ Play it: [brick-breaker.sajithk.in](https://brick-breaker.sajithk.in)** — source in [`examples/brick-breaker.html`](examples/brick-breaker.html).
 - **Did live product research.** Asked for *"the cheapest 1080p, good-lumens projector under ₹25,000,"* Ornith drove a headed browser via pi, hit a Google CAPTCHA, **adapted to Amazon.in on its own**, and returned a comparison table of real listings with prices, lumens, and ratings.
 
 ---
