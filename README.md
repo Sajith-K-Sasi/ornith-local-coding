@@ -4,6 +4,8 @@
 
 This repo is the exact setup + benchmarks behind running Ornith locally on a **fanless M5 MacBook Air (24 GB)** with [llama.cpp](https://github.com/ggml-org/llama.cpp) and the [pi](https://pi.dev) coding agent.
 
+![Ornith 9B on a 24 GB MacBook Air — generation speed vs. time to finish real coding tasks](assets/benchmark.png)
+
 > TL;DR — On 24 GB the winning config is Ornith-9B **`Q4_K_M`**: same task quality as the near-lossless quants in testing, ~30% faster, ~5 GB, with local image understanding. See [the benchmarks](#benchmarks).
 
 ---
