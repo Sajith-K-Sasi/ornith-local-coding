@@ -1,0 +1,14 @@
+# benchmark outputs
+bench/results/
+bench/**/artifacts/
+*.json.bak
+
+# model weights (never commit)
+*.gguf
+
+# python
+__pycache__/
+*.pyc
+
+# os
+.DS_Store
