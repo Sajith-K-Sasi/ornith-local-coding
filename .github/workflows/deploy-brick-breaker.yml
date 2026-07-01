@@ -1,0 +1,97 @@
+name: Deploy Brick Breaker
+
+on:
+  push:
+    branches: [ main ]
+    paths:
+      - 'examples/brick-breaker.html'
+      - 'deploy/brick-breaker/**'
+      - '.github/workflows/deploy-brick-breaker.yml'
+  workflow_dispatch:
+
+env:
+  IMAGE: ghcr.io/sajith-k-sasi/brick-breaker
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Log in to the Container registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata (tags, labels)
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.IMAGE }}
+          tags: |
+            type=sha,format=long
+            latest
+
+      - name: Build and push image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: deploy/brick-breaker/Dockerfile
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    needs: build-and-push
+    runs-on: ubuntu-latest
+    permissions:
+      packages: read
+    steps:
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.ORACLE_SSH_PRIVATE_KEY }}
+
+      - name: Add Oracle server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.ORACLE_SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to Oracle Cloud
+        env:
+          ORACLE_SERVER_IP: ${{ secrets.ORACLE_SERVER_IP }}
+          ORACLE_SERVER_USER: ${{ secrets.ORACLE_SERVER_USER }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_USERNAME: ${{ github.actor }}
+        run: |
+          cat > deploy.sh << 'EOL'
+          #!/bin/bash
+          set -e
+          IMAGE="ghcr.io/sajith-k-sasi/brick-breaker:latest"
+
+          echo "$GITHUB_TOKEN" | docker login ghcr.io -u "$GITHUB_USERNAME" --password-stdin
+          docker pull "$IMAGE"
+
+          docker stop brick-breaker 2>/dev/null || true
+          docker rm brick-breaker 2>/dev/null || true
+
+          docker run -d \
+            --name brick-breaker \
+            --restart unless-stopped \
+            -p 8082:80 \
+            "$IMAGE"
+
+          docker image prune -f
+          echo "Deployed brick-breaker on :8082"
+          EOL
+
+          chmod +x deploy.sh
+          scp -o StrictHostKeyChecking=no deploy.sh "$ORACLE_SERVER_USER@$ORACLE_SERVER_IP:/tmp/bb-deploy.sh"
+          ssh -o StrictHostKeyChecking=no "$ORACLE_SERVER_USER@$ORACLE_SERVER_IP" \
+            "export GITHUB_TOKEN='$GITHUB_TOKEN' GITHUB_USERNAME='$GITHUB_USERNAME' && bash /tmp/bb-deploy.sh && rm -f /tmp/bb-deploy.sh"
