@@ -2,7 +2,7 @@
 
 **Run [Ornith-1.0-9B](https://ornith.site/) — an agentic coding model — entirely on your laptop.** No API keys, no cloud bill, no code leaving your machine.
 
-This repo is the exact setup + benchmarks behind running Ornith locally on a **fanless M5 MacBook Air (24 GB)** with [llama.cpp](https://github.com/ggml-org/llama.cpp) and the [pi](https://github.com/) coding agent.
+This repo is the exact setup + benchmarks behind running Ornith locally on a **fanless M5 MacBook Air (24 GB)** with [llama.cpp](https://github.com/ggml-org/llama.cpp) and the **pi** coding agent.
 
 > TL;DR — On 24 GB the winning config is Ornith-9B **`Q4_K_M`**: same task quality as the near-lossless quants in testing, ~30% faster, ~5 GB, with local image understanding. See [the benchmarks](#benchmarks).
 
