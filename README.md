@@ -58,13 +58,7 @@ export ORNITH_MMPROJ=/path/to/ornith-mmproj-f16.gguf
 
 `start_ornith.sh` passes `--image-min-tokens 1024` when vision is on — Ornith's Qwen-VL encoder needs it for good accuracy on detail/grounding (reading small text in screenshots, UI layout).
 
-Then ask Ornith about any image — the image never leaves your machine:
-
-```bash
-./ask-image.sh screenshot.png "What's the bug in this stack trace?"
-./ask-image.sh mockup.png "Turn this UI into HTML/CSS"
-./ask-image.sh diagram.jpg            # defaults to a describe prompt
-```
+`models.json` registers Ornith with image input, so you can send screenshots, mockups, or diagrams **directly in pi** — paste/attach an image and ask about it. The image is processed on-device and never uploaded.
 
 ### Apple Silicon tip
 
@@ -124,7 +118,6 @@ When a reasoning model "fails," check whether it actually *finished* before blam
 ```
 start_ornith.sh   # serve Ornith on llama.cpp (Q4_K_M + optional vision)
 run-ornith.sh     # one-command: dependency check -> serve
-ask-image.sh      # send an image + question to Ornith (local vision)
 models.json       # pi agent provider block (points at the local endpoint)
 bench/            # reproducible speed + quality benchmarks
 examples/         # brick-breaker.html — a game Ornith built & debugged
