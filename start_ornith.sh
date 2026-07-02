@@ -29,8 +29,10 @@ args=(
 )
 
 # Vision (image understanding) is optional: provide an mmproj encoder to enable it.
+# --image-min-tokens 1024: Ornith's Qwen-VL vision encoder needs >=1024 image tokens
+# for good accuracy on detail/grounding (reading screenshots, small text, UI layout).
 if [[ -n "${MMPROJ}" && -f "${MMPROJ}" ]]; then
-  args+=(--mmproj "${MMPROJ}")
+  args+=(--mmproj "${MMPROJ}" --image-min-tokens 1024)
   echo "vision: ENABLED (${MMPROJ})"
 else
   echo "vision: disabled — set ORNITH_MMPROJ=/path/to/ornith-mmproj-f16.gguf to enable"
